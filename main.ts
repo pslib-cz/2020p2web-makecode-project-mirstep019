@@ -8,6 +8,13 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile`, function(sprite, loc
     game.over(false, effects.melt)
 })
 
+//fall on darklava - game over   
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myDarkLava`, function(sprite, location) {
+    game.over(false, effects.dissolve)
+})
+
+
+
 //player sprite look a like
 let mySprite = sprites.create(img`
     . . . . . . . 2 2 2 1 1 2 . . .
@@ -48,12 +55,6 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 //fall accelaration
 mySprite.ay = 230;
 
-//score 
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSprite) {
-    info.changeScoreBy(1)
-    music.baDing.play()
-    otherSprite.destroy()
-})
 //Portal teleport
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myPortal`, function (sprite, location) {
     current_level += 1
@@ -64,14 +65,121 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myPortal`, function (sprite, 
     }
     startLevel()
 })
+//enemy spawn and score
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Coin, function (sprite, otherSprite) {
+    info.changeScoreBy(1)
+    music.baDing.play()
+    otherSprite.destroy()
+    fly = sprites.create(img`
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+    `, SpriteKind.Enemy)
+    animation.runImageAnimation(
+    fly, 
+    [img`
+        f f f . . . . . . . . f f f . .
+        c b b c f . . . . . . c c f f .
+        . c b b c f . . . . . . c c f f
+        . c c c b f . . . . . . c f c f
+        . c c b b c f . c c . c c f f f
+        . c b b c b f c c 3 c c 3 c f f
+        . c b c c b f c b 3 c b 3 b f f
+        . . c c c b b c b 1 b b b 1 c .
+        . . . c c c c b b 1 b b b 1 c .
+        . . . . c c b b b b b b b b b c
+        . . . . f b b b b c 1 f f 1 b c
+        . . . c f b b b b f 1 f f 1 f f
+        . . c c f b b b b f 2 2 2 2 f f
+        . . . . f c b b b b 2 2 2 2 f .
+        . . . . . f c b b b b b b f . .
+        . . . . . . f f f f f f f . . .
+    `,img`
+        . . . . . . . . . . . f f f . .
+        f f f . . . . . . . . c c f f f
+        c b b c f . . . c c . c c c f f
+        . c b b b f f c c 3 c c 3 c f f
+        . c c c b b f c b 3 c b 3 c f f
+        . c c b c b f c b b b b b b c f
+        . c b b c b b c b 1 b b b 1 c c
+        . c b c c c b b b b b b b b b c
+        . . c c c c c b b c 1 f f 1 b c
+        . . . c f b b b b f 1 f f 1 f c
+        . . . c f b b b b f f f f f f f
+        . . c c f b b b b f 2 2 2 2 f f
+        . . . . f c b b b 2 2 2 2 2 f .
+        . . . . . f c b b b 2 2 2 f . .
+        . . . . . . f f f f f f f . . .
+        . . . . . . . . . . . . . . . .
+    `,img`
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . .
+        . . . . . . . . c c . c c . . .
+        . . . . . . c c c 3 c c 3 f . .
+        . . . . . c c c b 3 c b 3 c f .
+        . . . . f f b b b b b b b b c f
+        . . . . f f b b b 1 b b b 1 c c
+        . . . f f f c b b b b b b b b c
+        . . . f f f f b b c 1 f f 1 b c
+        . . . b b b c c b f 1 f f 1 f f
+        . . . c c c c f b f f f f f f f
+        . . c c c b b f b f 2 2 2 2 f f
+        . . . c b b c c b 2 2 2 2 2 f .
+        . . c b b c c f f b 2 2 2 f . .
+        . c c c c c f f f f f f f . . .
+        c c c c . . . . . . . . . . . .
+    `,img`
+        . f f f . . . . . . . . f f f .
+        . c b b c f . . . . . . . c f f
+        . . c b b c f . . . . . . c c f
+        . . c c c b f . . . . . . . f c
+        . . c c b b f f . . . . . f f c
+        . . c b b c b f c c . c c f f f
+        . . c b c c b f c c c c c f f f
+        . . . c c c b c b 3 c c 3 c f .
+        . . . c c c c b b 3 c b 3 b c .
+        . . . . c c b b b b b b b b c c
+        . . . c f b b b 1 1 b b b 1 1 c
+        . . c c f b b b b b b b b b b f
+        . . . . f b b b b c b b b c b f
+        . . . . f c b b b 1 f f f 1 f .
+        . . . . . f c b b b b b b f . .
+        . . . . . . f f f f f f f . . .
+    `],
+    100,
+    true
+    )
+    fly.setPosition(mySprite.x + 0, mySprite.y - 80)
+    fly.follow(mySprite, 50)
+})
+
 
 //ingame changes
 function startLevel () {
     //level changes
     if (current_level == 0) {
-        tiles.setTilemap(tilemap`level0`)} 
+        tiles.setTilemap(tilemap`level0`)
+        //life hearts
+        info.setLife(5)
+    } 
     else if (current_level == 1) {
-        tiles.setTilemap(tilemap`level1`)}
+        tiles.setTilemap(tilemap`level1`)
+        //life hearts
+        info.setLife(10)
+    }
     else {
         game.over(true)
     }
@@ -80,8 +188,7 @@ function startLevel () {
     for (let value of tiles.getTilesByType(assets.tile`tilespawn`)) {
         tiles.setTileAt(value, assets.tile`tile0`)
     }
-    //life hearts
-    info.setLife(3)
+    
     //enemy
     for (let value1 of sprites.allOfKind(SpriteKind.Enemy)) {
         value1.destroy()
@@ -273,8 +380,19 @@ function startLevel () {
         tiles.setTileAt(value3, assets.tile`tile0`)
     }
 }
+//players stats when enemy comes to game
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    otherSprite.destroy()
+    if (mySprite.y < otherSprite.y) {
+        info.changeScoreBy(10)
+        music.baDing.play()
+    } else {
+        info.changeLifeBy(-1)
+    }
+})
 
 
+let fly: Sprite = null
 let coin: Sprite = null
 let current_level = 0
 startLevel()
@@ -350,14 +468,6 @@ game.onUpdate(function () {
 
 
 
-
-
-
-
-
-
-
-
 //music 
 //idk why 
-//music.playMelody("D4 D4 D5 music.rest(BeatFraction.Half) A4 music.rest(BeatFraction.Half) G4# music.rest(BeatFraction.Half) G4 F4 D4 F4 G4 C4 C4 D5 music.rest(BeatFraction.Half) A4 music.rest(BeatFraction.Half) G4# music.rest(BeatFraction.Half) G4 F4 D4 F4 G4 B3 B3 D5 music.rest(BeatFraction.Half) A4 music.rest(BeatFraction.Half) G4# music.rest(BeatFraction.Half) G4 F4 D4 F4 G4 A3# A3# D5 music.rest(BeatFraction.Half) A4 G4# G4 F4 D4 F4 G4 F4 F4 F4 F4 D4 D4 D4 F4 F4 F4 G4 G# G F D F G F F F G G# A C A D D D A D C A A A A G G G A A A A G A C A G D A G F C G F E D D D D F C F D F G G# G F", 500);
+//music.playMelody("D4 D4 D5 music.rest(BeatFraction.Half) A4 music.rest(BeatFraction.Half) G4# music.rest(BeatFraction.Half) G4 F4 D4 F4 G4 C4 C4 D5 music.rest(BeatFraction.Half) A4 music.rest(BeatFraction.Half) G4# music.rest(BeatFraction.Half) G4 F4 D4 F4 G4 B3 B3 D5 music.rest(BeatFraction.Half) A4 music.rest(BeatFraction.Half) G4# music.rest(BeatFraction.Half) G4 F4 D4 F4 G4 A3# A3# D5 music.rest(BeatFraction.Half) A4 G4# G4 F4 D4 F4 G4 F4 F4 F4 F4 D4 D4 D4 F4 F4 F4 G4 G# G F D F G F F F G G# A C A D D D A D C A A A A G G G A A A A G A C A G D A G F C G F E D D D D F C F D F G G# G F", 480);
