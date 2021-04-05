@@ -58,7 +58,6 @@ mySprite.ay = 230;
 //Portal teleport
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myPortal`, function (sprite, location) {
     current_level += 1
-    game.splash("NEXT LEVEL: FINAL LEVEL")
     scene.setBackgroundImage(assets.image`Background2`);
     for (let i = 0; i < 1; i++) {
         mySprite.startEffect(effects.fire, 2000)
