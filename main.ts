@@ -1,5 +1,6 @@
 namespace SpriteKind {
     export const Coin = SpriteKind.create()
+    export const Boss = SpriteKind.create()
 }
 //background
 scene.setBackgroundImage(assets.image`Background`);
@@ -53,7 +54,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 //fall accelaration
-mySprite.ay = 230;
+mySprite.ay = 220;
 
 //Portal teleport
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myPortal`, function (sprite, location) {
@@ -378,19 +379,24 @@ function startLevel () {
         tiles.placeOnTile(coin, value3)
         tiles.setTileAt(value3, assets.tile`tile0`)
     }
+    for (let value4 of tiles.getTilesByType(assets.tile`myTileBoss`)) {
+        boss = sprites.create(assets.image`Megalovania`, SpriteKind.Boss)
+        tiles.placeOnTile(boss, value4)
+        boss.follow(mySprite, 50)
+    }
 }
 //players stats when enemy comes to game
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.destroy()
     if (mySprite.y < otherSprite.y) {
         info.changeScoreBy(10)
-        music.baDing.play()
+        music.knock.play()
     } else {
         info.changeLifeBy(-1)
     }
 })
 
-
+let boss: Sprite = null
 let fly: Sprite = null
 let coin: Sprite = null
 let current_level = 0
