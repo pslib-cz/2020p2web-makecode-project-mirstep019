@@ -2,7 +2,10 @@
     "name": "template arcade project-name",
     "description": "",
     "dependencies": {
-        "device": "*"
+        "device": "*",
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.1",
+        "color": "*",
+        "animation": "*"
     },
     "files": [
         "main.ts",
