@@ -5,7 +5,8 @@
         "device": "*",
         "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.1",
         "color": "*",
-        "animation": "*"
+        "animation": "*",
+        "Timers": "github:microsoft/arcade-timers#v1.1.0"
     },
     "files": [
         "main.ts",
